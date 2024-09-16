@@ -63,6 +63,18 @@ def get_iou(b1,b2):
     # Area = x2-x1 * y2-y1
     area1=(b1[:,2]-b1[:,0])*(b1[:,3]-b1[:,1])
     area2=(b2[:,2]-b2[:,0])*(b2[:,3]-b2[:,1])
+    #get top x1,y1
+    x_left = torch.max(b1[:,None,0],b2[:,0])
+    y_top = torch.max(b1[:,None,1],b2[:,1])
+    #get right and bottom x2 y2
+    x_right=torch.min(b1[:,None,2],b2[:,2])
+    y_bott=torch.min(b1[:,None,3],b2[:,3])
+
+    iou_area=(x_right-x_left).clamp(min=0) * (y_bott-y_top).clamp(min=0)
+    union_area=area1[:,None]+area2 -iou_area
+    return iou_area/union_area
+
+
 
 
     
